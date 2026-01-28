@@ -11,8 +11,10 @@ class ScoreSamples:
         self.templates = self.load_templates(template_path)
         self.label_words = self.load_label_words(label_words_path)
         self.language_model = AutoModelForMaskedLM.from_pretrained(language_model_path)
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         logging.info("language model loaded successfully")
         self.language_model.eval()
+        self.language_model.to(self.device)
         self.tokenizer = AutoTokenizer.from_pretrained(language_model_path)
         logging.info("tokenizer loaded successfully")
         self.dataset = dataset
