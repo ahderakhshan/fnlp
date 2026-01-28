@@ -52,7 +52,7 @@ class ScoreSamples:
 
     def write_samples(self):
         dataframe = {"text_a": [], "label": [], "scores": []}
-        if self.dataset.train.data.text_b is not None:
+        if self.dataset.train.data.samples[0].text_b is not None:
             dataframe["text_b"] = []
         for sample in self.dataset.train.data:
             dataframe["text_a"].append(sample.text_a)
