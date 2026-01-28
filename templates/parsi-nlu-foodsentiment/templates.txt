@@ -1,0 +1,3 @@
+<text_a> <mask> بود.
+<mask> بود <text_a>
+<text_a> <mask>

@@ -1,0 +1,2 @@
+{"Negative": "بد", "Positive": "خوب", "Neutral": "معمولی"}
+{"Negative": "بد", "Positive": "خوب", "Neutral": "معمولی"}
