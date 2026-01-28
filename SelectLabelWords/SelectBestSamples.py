@@ -2,6 +2,7 @@ import pandas as pd
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import torch
 import torch.nn.functional as F
+import logging
 
 
 class ScoreSamples:
@@ -10,8 +11,10 @@ class ScoreSamples:
         self.templates = self.load_templates(template_path)
         self.label_words = self.load_label_words(label_words_path)
         self.language_model = AutoModelForMaskedLM.from_pretrained(language_model_path)
+        logging.info("language model loaded successfully")
         self.language_model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(language_model_path)
+        logging.info("tokenizer loaded successfully")
         self.dataset = dataset
         self.threshold = threshold
         self.max_length = max_length
@@ -31,12 +34,14 @@ class ScoreSamples:
             return [eval(line) for line in lines]
 
     def score_samples(self):
-        for sample in self.dataset.train.data:
-            for template in self.templates:
-                for label_word in self.label_words:
+        logging.info("start computing scores")
+        for template in self.templates:
+            for label_word in self.label_words:
+                for sample in self.dataset.train.data:
                     predicted_label = self.predict(sample, template, label_word)
                     if predicted_label == sample.label:
                         sample.score += 1
+                logging.info(f"socres for template {template} and label words {label_word} computed")
         statements = len(self.templates) * len(self.label_words)
         for sample in self.dataset.train.data:
             sample.score /= statements
