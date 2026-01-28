@@ -2,7 +2,7 @@ from SelectLabelWords.SelectBestSamples import ScoreSamples
 from SelectLabelWords.Dataset import Dataset
 
 
-my_dataset = Dataset("./data/parsi-nlu-foodsentiment")
+my_dataset = Dataset("./data/parsi-nlu-foodsentiment", text_a_column=1, text_b_column=None, label_column=0)
 sample_selector = ScoreSamples(template_path="./templates/parsi-nlu-foodsentiment/templates.txt",
                                label_words_path="./labelwords/parsi-nlu-foodsentiment/labelwords.txt",
                                language_model_path="/home/am_derakhshan/fnlp/models/xlm-roberta/xlm-roberta-large/",

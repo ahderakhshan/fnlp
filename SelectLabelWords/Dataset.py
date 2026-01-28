@@ -32,7 +32,10 @@ class DataSplit:
 
 
 class Dataset:
-    def __init__(self, path):
-        self.train = DataSplit(path, "train")
-        self.test = DataSplit(path, "test")
-        self.dev = DataSplit(path, "dev")
+    def __init__(self, path, text_a_column, text_b_column, label_column):
+        self.train = DataSplit(path, "train", text_a_column=text_a_column, text_b_column=text_b_column,
+                               label_column=label_column)
+        self.test = DataSplit(path, "test", text_a_column=text_a_column, text_b_column=text_b_column,
+                              label_column=label_column)
+        self.dev = DataSplit(path, "dev", text_a_column=text_a_column, text_b_column=text_b_column,
+                             label_column=label_column)
