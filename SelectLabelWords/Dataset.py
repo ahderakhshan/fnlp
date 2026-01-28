@@ -14,7 +14,7 @@ class DataSplit:
     def __init__(self, path, split, text_a_column=0, text_b_column=None, label_column=1):
         if split not in ["train", "test", "dev"]:
             raise ValueError("split must be train, test and dev")
-        self.path = os.path.join(path, split, "csv")
+        self.path = os.path.join(path, split + ".csv")
         self.text_a_column = text_a_column
         self.text_b_column = text_b_column
         self.label_column = label_column
