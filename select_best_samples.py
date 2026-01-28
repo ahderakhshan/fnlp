@@ -8,5 +8,6 @@ sample_selector = ScoreSamples(template_path="./templates/parsi-nlu-foodsentimen
                                language_model_path="/home/am_derakhshan/fnlp/models/xlm-roberta/xlm-roberta-large/",
                                dataset=my_dataset,
                                write_sample_scores=True,
-                               output_path="./data/parsi-nlu-foodsentiment/train_scores.csv")
+                               output_path="./data/parsi-nlu-foodsentiment/train_scores.csv",
+                               max_length=128)
 sample_selector.score_samples()
