@@ -41,9 +41,6 @@ class ScoreSamples:
             for label_word in self.label_words:
                 for sample in self.dataset.train.data:
                     predicted_label = self.predict(sample, template, label_word)
-                    print(predicted_label)
-                    print(sample.label)
-                    print("*************")
                     if predicted_label == sample.label:
                         sample.score += 1
                 logging.info(f"socres for template {template} and label words {label_word} computed")
