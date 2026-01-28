@@ -70,6 +70,7 @@ class ScoreSamples:
 
         tokenized_input = self.tokenizer(template, return_tensors="pt", padding="max_length", max_length=self.max_length
                                          , truncation=True)
+        tokenized_input = {k: v.to(self.device) for k, v in tokenized_input.items()}
         input_ids = tokenized_input["input_ids"]
         mask_token_id = self.tokenizer.mask_token_id
         mask_index = (input_ids == mask_token_id).nonzero(as_tuple=True)[1]
