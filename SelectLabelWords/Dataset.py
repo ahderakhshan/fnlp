@@ -23,7 +23,7 @@ class DataSplit:
     def load_data(self):
         dataset = pd.read_csv(self.path, header=None)
         result = []
-        for index, row in dataset.iterrows():
+        for index, row in dataset.iterrows()[:100]:
             text_a = row[self.text_a_column]
             text_b = None if self.text_b_column is None else row[self.text_b_column]
             label = row[self.label_column]
