@@ -15,5 +15,5 @@ sample_selector = ScoreSamples(template_path="./templates/parsi-nlu-foodsentimen
                                dataset=my_dataset,
                                write_sample_scores=True,
                                output_path="./data/parsi-nlu-foodsentiment/train_scores.csv",
-                               max_length=128)
+                               max_length=512)
 sample_selector.score_samples()
