@@ -6,7 +6,7 @@ import logging
 
 
 class ScoreSamples:
-    def __init__(self, template_path, label_words_path, language_model_path, dataset, threshold=0.5, max_length=512,
+    def __init__(self, template_path, label_words_path, language_model_path, dataset, max_length=512,
                  write_sample_scores=False, output_path=None):
         self.templates = self.load_templates(template_path)
         self.label_words = self.load_label_words(label_words_path)
@@ -18,7 +18,6 @@ class ScoreSamples:
         self.tokenizer = AutoTokenizer.from_pretrained(language_model_path)
         logging.info("tokenizer loaded successfully")
         self.dataset = dataset
-        self.threshold = threshold
         self.max_length = max_length
         self.write_sample_scores = write_sample_scores
         self.output_path = output_path
