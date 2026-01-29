@@ -1,5 +1,11 @@
 from SelectLabelWords.SelectBestSamples import ScoreSamples
 from SelectLabelWords.Dataset import Dataset
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 
 my_dataset = Dataset("./data/parsi-nlu-foodsentiment", text_a_column=1, text_b_column=None, label_column=0)
