@@ -35,12 +35,23 @@ class ScoreSamples:
             lines = f.read().strip().split("\n")
             return [eval(line) for line in lines]
 
+    def convert_label_word_to_ids(self, label_word):
+        result = {}
+        for key, value in label_word.items():
+            value_id = self.tokenizer.encode(value, add_special_tokens=False)
+            if len(value_id) == 1:
+                result[key] = value_id
+            else:
+                raise ValueError(f"initial label words must be single token {value} for {key} is unacceptable")
+        return result
+
     def score_samples(self):
         logging.info("start computing scores")
-        for template in self.templates:
-            for label_word in self.label_words:
+        for label_word in self.label_word:
+            label_word_ids = self.convert_label_word_to_ids(label_word)
+            for template in self.templates:
                 for sample in self.dataset.train.data:
-                    predicted_label = self.predict(sample, template, label_word)
+                    predicted_label = self.predict(sample, template, label_word_ids)
                     if predicted_label == sample.label:
                         sample.score += 1
                 logging.info(f"socres for template {template} and label words {label_word} computed")
@@ -63,7 +74,7 @@ class ScoreSamples:
         dataframe = pd.DataFrame(dataframe)
         dataframe.to_csv(self.output_path)
 
-    def predict(self, sample, template, label_word):
+    def predict(self, sample, template, label_word_ids):
         template = template.replace("<text_a>", sample.text_a)
         if '<text_b>' in template:
             template = template.replace("<text_b>", sample.text_b)
@@ -84,14 +95,10 @@ class ScoreSamples:
         max_prob = 0
         selected_label = None
 
-        for key, value in label_word.items():  # key is label in dataset and value is label word
-            value_id = self.tokenizer.encode(value, add_special_tokens=False)
-            if len(value_id) == 1:
-                prob = probs[0, value_id[0]].item()
-                if prob >= max_prob:
-                    max_prob = prob
-                    selected_label = key
-            else:
-                raise ValueError(f"initial label words must be single token {value} for {key} is unacceptable")
+        for key, value in label_word_ids.items():  # key is label in dataset and value is label word
+            prob = probs[0, value[0]].item()
+            if prob >= max_prob:
+                max_prob = prob
+                selected_label = key
 
         return selected_label
