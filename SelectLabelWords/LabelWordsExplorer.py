@@ -75,5 +75,5 @@ class LabelWordsExplorer:
         for key, value in result.items():
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
             result[key] = sorted_value
-        result = {k: list(v.values())[:self.m1] for k, v in result.items()}
+        result = {k: list(v.keys())[:self.m1] for k, v in result.items()}
         return result
