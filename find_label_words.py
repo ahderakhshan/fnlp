@@ -43,7 +43,7 @@ for template in templates:
 
 with open(OutputPath, "w") as f:
     for explored_label_word in explored_label_words:
-        f.write(explored_label_word + "\n")
+        f.write(str(explored_label_word) + "\n")
 
 logging.info("Complete")
 
