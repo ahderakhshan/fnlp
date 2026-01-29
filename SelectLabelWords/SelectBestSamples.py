@@ -47,7 +47,7 @@ class ScoreSamples:
 
     def score_samples(self):
         logging.info("start computing scores")
-        for label_word in self.label_word:
+        for label_word in self.label_words:
             label_word_ids = self.convert_label_word_to_ids(label_word)
             for template in self.templates:
                 for sample in self.dataset.train.data:
