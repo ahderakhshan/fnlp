@@ -72,6 +72,8 @@ class LabelWordsExplorer:
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
         logging.info(f"result is {result}")
-        result = {k: sorted(v.items(), key=lambda x: x[1], reverse=True) for k, v in result.items()}
-        result = {k: v[0:self.m1] for k, v in result.items()}
+        for key, value in result.items():
+            sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
+            result[key] = sorted_value
+        result = {k: list(v.values())[:self.m1] for k, v in result.items()}
         return result
