@@ -65,13 +65,13 @@ class LabelWordsExplorer:
         for sample in self.dataset.train.data:
             demonstrations = self.sample_demonstrations()
             model_input = self.make_input(sample, demonstrations)
-            logging.info(f"model input is {model_input}")
             top_k_tokens = self.get_top_k_tokens(model_input)
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
                     result[sample.label][top_k_token] += 1 / (index + 1)
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
+        logging.info(f"result is {result}")
         result = {k: sorted(v.items(), key=lambda x: x[1], reverse=True) for k, v in result.items()}
         result = {k: v[0:self.m1] for k, v in result.items()}
         return result
