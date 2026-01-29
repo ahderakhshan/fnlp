@@ -72,6 +72,6 @@ class LabelWordsExplorer:
                     result[sample.label][top_k_token] += 1 / (index + 1)
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
-        result = {k: sorted(v.items(), key=lambda x: x[1]) for k, v in result.items()}
+        result = {k: sorted(v.items(), key=lambda x: x[1], reverse=True) for k, v in result.items()}
         result = {k: v[0:self.m1] for k, v in result.items()}
         return result
