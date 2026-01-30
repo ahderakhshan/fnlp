@@ -81,7 +81,7 @@ class LabelWordsExplorer:
             logits = outputs.logits
 
         mask_token_id = self.tokenizer.mask_token_id
-        mask_positions = (inputs == mask_token_id).nonzero(as_tuple=True)[1]
+        mask_positions = (inputs["input_ids"] == mask_token_id).nonzero(as_tuple=True)[1]
 
         results = []
         for pos in mask_positions:
