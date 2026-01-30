@@ -37,7 +37,7 @@ class LabelWordsExplorer:
         input = "<s>"
         for label, demo in demonstrations.items():
             print(f"demo label is {label} and sample label is {sample.label}")
-            if True:
+            if label == sample.label:
                 input += " " + self.template
                 input = input.replace("<text_a>", demo.text_a)
                 if sample.text_b is not None:
