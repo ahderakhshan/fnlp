@@ -36,11 +36,12 @@ class LabelWordsExplorer:
     def make_input(self, sample, demonstrations):
         input = ""
         for label, demo in demonstrations.items():
-            input += " " + self.template
-            input = input.replace("<text_a>", demo.text_a)
-            if sample.text_b is not None:
-                input = input.replace("<text_b>", demo.text_b)
-            input = input.replace(self.mask, self.initial_label_words[label])
+            if label == sample.label:
+                input += " " + self.template
+                input = input.replace("<text_a>", demo.text_a)
+                if sample.text_b is not None:
+                    input = input.replace("<text_b>", demo.text_b)
+                input = input.replace(self.mask, self.initial_label_words[label])
         input = self.template + input
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
