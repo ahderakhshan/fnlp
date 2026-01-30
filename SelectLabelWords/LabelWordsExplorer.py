@@ -36,6 +36,7 @@ class LabelWordsExplorer:
     def make_input(self, sample, demonstrations):
         input = ""
         for label, sample in demonstrations.items():
+            print(f"label of sample is {sample.label} and label of demo is {label}")
             if sample.label == label:
                 input += " " + self.template
                 input = input.replace("<text_a>", sample.text_a)
