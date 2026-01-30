@@ -45,7 +45,7 @@ class LabelWordsExplorer:
                 input = input.replace(self.mask, self.initial_label_words[label])
                 input += " </s>"
                 print(f"demo added and is {input}")
-        input = "</s>" + self.template + "</s>"
+        input = input + "</s>" + self.template + "</s>"
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
             input = input.replace("<text_b>", sample.text_b)
