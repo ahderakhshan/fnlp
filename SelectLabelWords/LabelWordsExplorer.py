@@ -34,18 +34,20 @@ class LabelWordsExplorer:
         return result
 
     def make_input(self, sample, demonstrations):
-        input = ""
+        input = "<s> "
         for label, demo in demonstrations.items():
             if label == sample.label:
-                input += " " + self.template
+                input += self.template
                 input = input.replace("<text_a>", demo.text_a)
                 if sample.text_b is not None:
                     input = input.replace("<text_b>", demo.text_b)
                 input = input.replace(self.mask, self.initial_label_words[label])
-        input = self.template + input
+                input += " </s>"
+        input = "</s>" + self.template + "</s>"
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
             input = input.replace("<text_b>", sample.text_b)
+        input += "</s>"
         return input
 
     def get_top_k_tokens(self, model_input):
@@ -60,7 +62,7 @@ class LabelWordsExplorer:
         probs = torch.softmax(mask_logits, dim=-1)
         top_probs, top_indices = torch.topk(probs, self.k1, dim=-1)
         top_tokens = self.tokenizer.convert_ids_to_tokens(top_indices[0])
-        return [top_token.replace("Ġ", "") for top_token in top_tokens]
+        return [self.tokenizer.convert_tokens_to_string(top_token) for top_token in top_tokens]
 
     def find_label_words_single_token(self):
         result = {k: {} for k, _ in self.initial_label_words.items()}
@@ -69,7 +71,7 @@ class LabelWordsExplorer:
             demonstrations = self.sample_demonstrations()
             #print(f"selected demo is {demonstrations}")
             model_input = self.make_input(sample, demonstrations)
-            #print(f"model input is {model_input}")
+            print(f"model input is {model_input}")
             top_k_tokens = self.get_top_k_tokens(model_input)
             #print(f"top k tokens is {top_k_tokens}")
             for index, top_k_token in enumerate(top_k_tokens):
