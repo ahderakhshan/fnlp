@@ -37,7 +37,7 @@ class LabelWordsExplorer:
         input = "<s> "
         for label, demo in demonstrations.items():
             print(f"demo label is {label} and sample label is {sample.label}")
-            if label == sample.label:
+            if True:
                 input += self.template
                 input = input.replace("<text_a>", demo.text_a)
                 if sample.text_b is not None:
@@ -49,7 +49,6 @@ class LabelWordsExplorer:
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
             input = input.replace("<text_b>", sample.text_b)
-        input += "</s>"
         return input
 
     def get_top_k_tokens(self, model_input):
