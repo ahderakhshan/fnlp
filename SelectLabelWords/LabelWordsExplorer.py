@@ -63,21 +63,21 @@ class LabelWordsExplorer:
 
     def find_label_words_single_token(self):
         result = {k: {} for k, _ in self.initial_label_words.items()}
-        print(f"result is {result}")
+        #print(f"result is {result}")
         for sample in self.dataset.train.data:
             demonstrations = self.sample_demonstrations()
-            print(f"selected demo is {demonstrations}")
+            #print(f"selected demo is {demonstrations}")
             model_input = self.make_input(sample, demonstrations)
-            print(f"model input is {model_input}")
+            #print(f"model input is {model_input}")
             top_k_tokens = self.get_top_k_tokens(model_input)
-            print(f"top k tokens is {top_k_tokens}")
+            #print(f"top k tokens is {top_k_tokens}")
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
                     result[sample.label][top_k_token] += 1 / (index + 1)
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
-            print(f"result is {result}")
-            time.sleep(10)
+            #print(f"result is {result}")
+            #time.sleep(10)
         logging.info(f"result is {result}")
         for key, value in result.items():
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
