@@ -44,6 +44,7 @@ class LabelWordsExplorer:
                     input = input.replace("<text_b>", demo.text_b)
                 input = input.replace(self.mask, self.initial_label_words[label])
                 input += " </s>"
+                print(f"demo added and is {input}")
         input = "</s>" + self.template + "</s>"
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
@@ -81,7 +82,7 @@ class LabelWordsExplorer:
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
             #print(f"result is {result}")
-            #time.sleep(10)
+            time.sleep(10)
         logging.info(f"result is {result}")
         for key, value in result.items():
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
