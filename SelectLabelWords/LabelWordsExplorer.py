@@ -81,7 +81,7 @@ class LabelWordsExplorer:
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
             #print(f"result is {result}")
-            time.sleep(10)
+            #time.sleep(10)
         logging.info(f"result is {result}")
         for key, value in result.items():
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
