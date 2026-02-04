@@ -40,7 +40,7 @@ for template in templates:
                                              m2=20,
                                              n2=30,
                                              max_length=256)
-    explored_label_words.append(label_word_explorer.find_label_words_single_token())
+    explored_label_words.append(label_word_explorer.find_label_words())
 
 with open(OutputPath, "w") as f:
     for explored_label_word in explored_label_words:
