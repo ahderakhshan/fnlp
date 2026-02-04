@@ -39,7 +39,7 @@ for template in templates:
                                              k2=25,
                                              m2=20,
                                              n2=30,
-                                             max_length=256)
+                                             max_length=512)
     explored_label_words.append(label_word_explorer.find_label_words())
 
 with open(OutputPath, "w") as f:
