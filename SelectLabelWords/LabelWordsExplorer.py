@@ -6,7 +6,7 @@ import time
 
 
 class LabelWordsExplorer:
-    def __init__(self, language_model, dataset, initial_label_words, template, threshold, k1, m1, k2, m2,
+    def __init__(self, language_model, dataset, initial_label_words, template, threshold, k1, m1, k2, m2, n2,
                  mask="<mask>", max_length=512):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.language_model = AutoModelForMaskedLM.from_pretrained(language_model)
@@ -22,6 +22,7 @@ class LabelWordsExplorer:
         self.m1 = m1
         self.k2 = k2
         self.m2 = m2
+        self.n2 = n2
         self.mask = mask
         self.max_length = max_length
 
@@ -37,21 +38,20 @@ class LabelWordsExplorer:
         input = "<s>"
         for label, demo in demonstrations.items():
             print(f"demo label is {label} and sample label is {sample.label}")
-            if True:
-                input += " " + self.template
-                input = input.replace("<text_a>", demo.text_a)
-                if sample.text_b is not None:
-                    input = input.replace("<text_b>", demo.text_b)
-                input = input.replace(self.mask, self.initial_label_words[label])
-                input += " </s>"
-                print(f"demo added and is {input}")
+            input += " " + self.template
+            input = input.replace("<text_a>", demo.text_a)
+            if sample.text_b is not None:
+                input = input.replace("<text_b>", demo.text_b)
+            input = input.replace(self.mask, self.initial_label_words[label])
+            input += " </s>"
+            print(f"demo added and is {input}")
         input = input + "</s> " + self.template + " </s>"
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
             input = input.replace("<text_b>", sample.text_b)
         return input
 
-    def get_top_k_tokens(self, model_input):
+    def get_top_k_single_tokens(self, model_input):
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
@@ -97,30 +97,32 @@ class LabelWordsExplorer:
         double_token_probs = {}
         for first_mask_token, first_mask_prob in first_mask_token_prob:
             for second_mask_token, second_mask_prob in second_mask_token_prob:
-                double_token_probs[f"{first_mask_token}-{second_mask_token}"] = first_mask_prob * second_mask_prob
+                double_token_probs[f"{first_mask_token}*{second_mask_token}"] = first_mask_prob * second_mask_prob
         double_token_probs = dict(sorted(double_token_probs.items(), key=lambda x: x[1], reverse=True))
-        return list(double_token_probs.keys())[:self.k2]
+        return list(double_token_probs.keys())[:self.n2]
 
-    def find_label_words_single_token(self):
+    def rank_label_words(self, m, get_top_k_func):
         result = {k: {} for k, _ in self.initial_label_words.items()}
-        #print(f"result is {result}")
         for sample in self.dataset.train.data:
             demonstrations = self.sample_demonstrations()
-            #print(f"selected demo is {demonstrations}")
             model_input = self.make_input(sample, demonstrations)
-            print(f"model input is {model_input}")
-            top_k_tokens = self.get_top_k_double_tokens(model_input)
-            #print(f"top k tokens is {top_k_tokens}")
+            top_k_tokens = get_top_k_func(model_input)
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
                     result[sample.label][top_k_token] += 1 / (index + 1)
                 except:
                     result[sample.label][top_k_token] = 1 / (index + 1)
-            #print(f"result is {result}")
-            #time.sleep(10)
-        logging.info(f"result is {result}")
         for key, value in result.items():
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
             result[key] = sorted_value
-        result = {k: list(v.keys())[:self.m1] for k, v in result.items()}
+        result = {k: list(v.keys())[:m] for k, v in result.items()}
         return result
+
+    def find_label_words(self):
+        single_token_label_words = self.rank_label_words(self.m1, self.get_top_k_single_tokens)
+        double_token_label_words = self.rank_label_words(self.m2, self.get_top_k_double_tokens)
+        assert set(list(single_token_label_words.keys())) == set(list(double_token_label_words.keys())),\
+            "keys are different in single token and double token label words"
+        return {k: single_token_label_words[k] + double_token_label_words[k] for k in single_token_label_words.keys()}
+
+

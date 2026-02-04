@@ -34,10 +34,11 @@ for template in templates:
                                              initial_label_words=main_label_words,
                                              template=template,
                                              threshold=0.5,
-                                             k1=20,
-                                             m1=10,
-                                             k2=20,
-                                             m2=10,
+                                             k1=50,
+                                             m1=20,
+                                             k2=25,
+                                             m2=20,
+                                             n2=30,
                                              max_length=256)
     explored_label_words.append(label_word_explorer.find_label_words_single_token())
 
