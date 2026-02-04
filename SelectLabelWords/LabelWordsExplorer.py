@@ -2,7 +2,6 @@ import logging
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import random
 import torch
-import time
 
 
 class LabelWordsExplorer:
@@ -37,14 +36,12 @@ class LabelWordsExplorer:
     def make_input(self, sample, demonstrations):
         input = "<s>"
         for label, demo in demonstrations.items():
-            print(f"demo label is {label} and sample label is {sample.label}")
             input += " " + self.template
             input = input.replace("<text_a>", demo.text_a)
             if sample.text_b is not None:
                 input = input.replace("<text_b>", demo.text_b)
             input = input.replace(self.mask, self.initial_label_words[label])
             input += " </s>"
-            print(f"demo added and is {input}")
         input = input + "</s> " + self.template + " </s>"
         input = input.replace("<text_a>", sample.text_a)
         if sample.text_b is not None:
@@ -71,8 +68,6 @@ class LabelWordsExplorer:
         mask_index = model_input.index(self.mask)
         model_input = model_input[:mask_index] + [self.mask] + model_input[mask_index:]
         model_input = " ".join(model_input)
-        print(f"model input is {model_input}")
-
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
