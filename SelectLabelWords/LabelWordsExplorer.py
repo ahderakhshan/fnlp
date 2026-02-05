@@ -66,7 +66,7 @@ class LabelWordsExplorer:
         # duplicate mask token
         model_input = model_input.split(" ")
         mask_index = model_input.index(self.mask)
-        model_input = model_input[:mask_index] + [self.mask] + model_input[mask_index:]
+        model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
         model_input = " ".join(model_input)
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
