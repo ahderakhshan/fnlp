@@ -88,6 +88,7 @@ for template_index, template in enumerate(templates):
         dataset['support'] = support_sampler(dataset['train'], seed=args.seed)
         support_dataset = dataset['support']
         for example in support_dataset:
+            print(f"example.label is {example.label}")
             example.label = -1
         support_dataloader = PromptDataLoader(dataset=support_dataset, template=mytemplate, tokenizer=tokenizer,
                                               tokenizer_wrapper_class=WrapperClass, max_seq_length=args.max_seq_length,
