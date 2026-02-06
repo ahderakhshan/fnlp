@@ -25,6 +25,7 @@ parser.add_argument("--model_name_or_path", type=str,
 parser.add_argument("--model", type=str, default="xlmroberta")
 parser.add_argument("--cutoff", type=float, default=0.8)
 parser.add_argument("--max_seq_length", type=int, default=256)
+parser.add_argument("--plm_eval_mode", action="store_true")
 args = parser.parse_args()
 
 plm, tokenizer, model_config, WrapperClass = load_plm(args.model, args.model_name_or_path)
