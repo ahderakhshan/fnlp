@@ -24,7 +24,7 @@ parser.add_argument("--model_name_or_path", type=str,
                     default="/home/am_derakhshan/fnlp/models/xlm-roberta/xlm-roberta-large/")
 parser.add_argument("--model", type=str, default="xlmroberta")
 parser.add_argument("--cutoff", type=float, default=0.8)
-parser.add_argument("--max_seq_length", type=int, default=512)
+parser.add_argument("--max_seq_length", type=int, default=256)
 args = parser.parse_args()
 
 plm, tokenizer, model_config, WrapperClass = load_plm(args.model, args.model_name_or_path)
