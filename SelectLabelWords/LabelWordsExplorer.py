@@ -76,7 +76,6 @@ class LabelWordsExplorer:
 
         mask_token_id = self.tokenizer.mask_token_id
         mask_positions = (inputs["input_ids"] == mask_token_id).nonzero(as_tuple=True)[1]
-        print(f"mask position is {mask_positions}")
         results = []
         for pos in mask_positions:
             mask_logits = logits[0, pos]  # (vocab_size,)
