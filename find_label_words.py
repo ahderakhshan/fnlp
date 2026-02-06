@@ -6,6 +6,7 @@ from openprompt.plms import load_plm
 from openprompt.prompts import ManualTemplate, KnowledgeableVerbalizer
 from openprompt import PromptDataLoader, PromptForClassification
 from openprompt.plms import ModelClass, _MODEL_CLASSES, MLMTokenizerWrapper
+from openprompt.data_utils.data_sampler import FewShotSampler
 from transformers import XLMRobertaConfig, XLMRobertaTokenizer, XLMRobertaForMaskedLM
 from SelectLabelWords.KPTDataProcessor import ParsinluSentimentProcessor
 import argparse
@@ -81,7 +82,9 @@ for template_index, template in enumerate(templates):
         myverbalizer = KnowledgeableVerbalizer(tokenizer, classes=class_labels, candidate_frac=args.cutoff,
                                                multi_token_handler="mean", max_token_split=args.max_seq_length)
         myverbalizer.label_words = list(finded_label_words.values())
-        support_dataset = dataset['train']
+        support_sampler = FewShotSampler(num_examples_per_label=200, also_sample_dev=False)
+        dataset['support'] = support_sampler(dataset['train'], seed=args.seed)
+        support_dataset = dataset['support']
         for example in support_dataset:
             example.label = -1
         support_dataloader = PromptDataLoader(dataset=support_dataset, template=mytemplate, tokenizer=tokenizer,
