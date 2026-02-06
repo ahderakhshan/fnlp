@@ -41,7 +41,7 @@ if args.task == "parsinlu-food-sentiment":
     dataset['train'] = ParsinluSentimentProcessor().get_train_examples("./data/parsi-nlu-foodsentiment/")
     dataset['test'] = ParsinluSentimentProcessor().get_test_examples("./data/parsi-nlu-foodsentiment/")
     class_labels = ParsinluSentimentProcessor().get_labels()
-    batch_s = 2
+    batch_s = 1
 
 logging.basicConfig(
     level=logging.INFO,
