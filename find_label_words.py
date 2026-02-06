@@ -79,7 +79,7 @@ for template_index, template in enumerate(templates):
         mytemplate = ManualTemplate(tokenizer=tokenizer).from_file(KPTTemplatePath, choice=template_index)
         myverbalizer = KnowledgeableVerbalizer(tokenizer, classes=class_labels, candidate_frac=args.cutoff,
                                                multi_token_handler="mean", max_token_split=args.max_seq_length)
-        myverbalizer.label_words = finded_label_words.values()
+        myverbalizer.label_words = list(finded_label_words.values())
         support_dataset = dataset['train']
         for example in support_dataset:
             example.label = -1
