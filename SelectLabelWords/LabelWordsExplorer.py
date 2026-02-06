@@ -67,7 +67,6 @@ class LabelWordsExplorer:
         model_input = model_input.split(" ")
         mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
-        model_input = " ".join(model_input)
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
@@ -77,7 +76,7 @@ class LabelWordsExplorer:
 
         mask_token_id = self.tokenizer.mask_token_id
         mask_positions = (inputs["input_ids"] == mask_token_id).nonzero(as_tuple=True)[1]
-
+        print(f"mask position is {mask_positions}")
         results = []
         for pos in mask_positions:
             mask_logits = logits[0, pos]  # (vocab_size,)
@@ -119,7 +118,9 @@ class LabelWordsExplorer:
 
     def find_label_words(self):
         single_token_label_words = self.rank_label_words(self.m1, self.get_top_k_single_tokens)
+        logging.info(f"single token label words founded {single_token_label_words}")
         double_token_label_words = self.rank_label_words(self.m2, self.get_top_k_double_tokens)
+        logging.info(f"double token label words founded {double_token_label_words}")
         assert set(list(single_token_label_words.keys())) == set(list(double_token_label_words.keys())),\
             "keys are different in single token and double token label words"
         return {k: [self.initial_label_words[k]] + single_token_label_words[k] + double_token_label_words[k] for k in single_token_label_words.keys()}
