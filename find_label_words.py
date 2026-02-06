@@ -8,7 +8,8 @@ from openprompt import PromptDataLoader, PromptForClassification
 from openprompt.plms import ModelClass, _MODEL_CLASSES, MLMTokenizerWrapper
 from openprompt.data_utils.data_sampler import FewShotSampler
 from transformers import XLMRobertaConfig, XLMRobertaTokenizer, XLMRobertaForMaskedLM
-from SelectLabelWords.KPTDataProcessor import ParsinluSentimentProcessor
+from SelectLabelWords.KPTDataProcessor import ParsinluSentimentProcessor, ParsiNLUNLI,\
+    DigikalaTextClassificationProcessor
 import argparse
 import torch
 from SelectLabelWords.utils import calibrate, tfidf_filter
@@ -35,15 +36,61 @@ plm, tokenizer, model_config, WrapperClass = load_plm(args.model, args.model_nam
 
 dataset = {}
 if args.task == "parsinlu-food-sentiment":
+    DataPath = "./data/parsi-nlu-foodsentiment/"
+    ScoreOutputPath = "./data/parsi-nlu-foodsentiment/train_scores.csv"
     TemplatePath = "./templates/parsi-nlu-foodsentiment/templates.txt"
     KPTTemplatePath = "./templates/parsi-nlu-foodsentiment/templates_kpt.txt"
     LabelWordPath = "./labelwords/parsi-nlu-foodsentiment/labelwords.txt"
     LanguageModel = args.model_name_or_path
-    OutputPath = "./templates/parsi-nlu-foodsentiment/explored_templates.txt"
+    OutputPath = "./labelwords/parsi-nlu-foodsentiment/explored_labelwrods_fodd.txt"
     main_label_words = {"Positive": "خوب", "Negative": "بد", "Neutral": "متوسط"}
-    dataset['train'] = ParsinluSentimentProcessor().get_train_examples("./data/parsi-nlu-foodsentiment/")
-    dataset['test'] = ParsinluSentimentProcessor().get_test_examples("./data/parsi-nlu-foodsentiment/")
+    dataset['train'] = ParsinluSentimentProcessor().get_train_examples(DataPath)
+    dataset['test'] = ParsinluSentimentProcessor().get_test_examples(DataPath)
     class_labels = ParsinluSentimentProcessor().get_labels()
+    del_a_chars = None
+    del_b_chars = None
+    batch_s = 1
+
+elif args.task == "parsinlu-movie-sentiment":
+    DataPath = "./data/parsi-nlu-moviesentiment/"
+    ScoreOutputPath = "./data/parsi-nlu-moviesentiment/train_scores.csv"
+    TemplatePath = "./templates/parsi-nlu-foodsentiment/templates.txt"
+    KPTTemplatePath = "./templates/parsi-nlu-foodsentiment/templates_kpt.txt"
+    LabelWordPath = "./labelwords/parsi-nlu-foodsentiment/labelwords.txt"
+    LanguageModel = args.model_name_or_path
+    OutputPath = "./labelwords/parsi-nlu-foodsentiment/explored_labelwords_movie.txt"
+    main_label_words = {"Positive": "خوب", "Negative": "بد", "Neutral": "متوسط"}
+    dataset['train'] = ParsinluSentimentProcessor().get_train_examples(DataPath)
+    dataset['test'] = ParsinluSentimentProcessor().get_test_examples(DataPath)
+    class_labels = ParsinluSentimentProcessor().get_labels()
+    del_a_chars = None
+    del_b_chars = None
+    batch_s = 1
+
+elif args.task == "parsinlu-nli":
+    DataPath = "./data/parsi-nlu-nli/"
+    ScoreOutputPath = "./data/parsi-nlu-nli/train_scores.csv"
+    TemplatePath = "./templates/parsi-nlu-nli/templates.txt"
+    KPTTemplatePath = "./templates/parsi-nlu-nli/templates_kpt.txt"
+    LabelWordPath = "./labelwords/parsi-nlu-nli/labelwords.txt"
+    LanguageModel = args.model_name_or_path
+    OutputPath = "./labelwords/parsi-nlu-nli/explored_labelwords.txt"
+    main_label_words = {"e": "بله", "n": "شاید", "c": "خیر"}
+    del_a_chars = [True, False, True]
+    del_b_chars = [False, False, True]
+    batch_s = 1
+
+elif args.task == "digikala-tc":
+    DataPath = "./data/digikala-text-classification/"
+    ScoreOutputPath = "./data/digikalal-text-classification/train_scores.csv"
+    TemplatePath = "./templates/digikalal-text-classification/templates.txt"
+    KPTTemplatePath = "./templates/digikalal-text-classification/templates_kpt.txt"
+    LabelWordPath = "./labelwords/digikalal-text-classification/labelwords.txt"
+    LanguageModel = args.model_name_or_path
+    OutputPath = "./labelwords/digikalal-text-classification/explored_labelwords.txt"
+    #main_label_words = {"Positive": "خوب", "Negative": "بد", "Neutral": "متوسط"}
+    del_a_chars = [False, True]
+    del_b_chars = [False, False]
     batch_s = 1
 
 logging.basicConfig(
@@ -51,14 +98,16 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
-my_dataset = Dataset("./data/parsi-nlu-foodsentiment", text_a_column=1, text_b_column=None, label_column=0)
+my_dataset = Dataset(DataPath, text_a_column=1, text_b_column=None, label_column=0)
 sample_selector = ScoreSamples(template_path=TemplatePath,
                                label_words_path=LabelWordPath,
                                language_model_path=LanguageModel,
                                dataset=my_dataset,
                                write_sample_scores=True,
-                               output_path="./data/parsi-nlu-foodsentiment/train_scores.csv",
-                               max_length=128)
+                               output_path=ScoreOutputPath,
+                               max_length=128,
+                               del_a_chars=del_a_chars,
+                               del_b_chars=del_b_chars)
 sample_selector.score_samples()
 my_dataset = sample_selector.dataset
 with open(TemplatePath, 'r') as f:
@@ -80,6 +129,29 @@ for template_index, template in enumerate(templates):
     finded_label_words = label_word_explorer.find_label_words()
     logging.info(f"label words found for template: {template} are {finded_label_words}")
     if len(args.filters) > 0:
+        if args.task == "parsinlu-nli":
+            if template_index == 0:
+                dataset['train'] = ParsiNLUNLI().get_train_examples(DataPath, del_a_last_char=True)
+                dataset['test'] = ParsiNLUNLI().get_test_examples(DataPath, del_a_last_char=True)
+                class_labels = ParsiNLUNLI().get_labels()
+            elif template_index == 1:
+                dataset['train'] = ParsiNLUNLI().get_train_examples(DataPath)
+                dataset['test'] = ParsiNLUNLI().get_test_examples(DataPath)
+                class_labels = ParsiNLUNLI().get_labels()
+            elif template_index == 2:
+                dataset['train'] = ParsiNLUNLI().get_train_examples(DataPath, del_a_last_char=True, del_b_last_char=True)
+                dataset['test'] = ParsiNLUNLI().get_test_examples(DataPath, del_a_last_char=True, del_b_last_char=True)
+                class_labels = ParsiNLUNLI().get_labels()
+        if args.task == "digikala-tc":
+            if template_index == 0:
+                dataset['train'] = DigikalaTextClassificationProcessor().get_train_examples(DataPath)
+                dataset['test'] = DigikalaTextClassificationProcessor().get_test_examples(DataPath)
+                class_labels = DigikalaTextClassificationProcessor().get_labels()
+            elif template_index == 1:
+                dataset['train'] = DigikalaTextClassificationProcessor().get_train_examples(DataPath, del_a_last_char=True)
+                dataset['test'] = DigikalaTextClassificationProcessor().get_test_examples(DataPath, del_a_last_char=True)
+                class_labels = DigikalaTextClassificationProcessor().get_labels()
+
         mytemplate = ManualTemplate(tokenizer=tokenizer).from_file(KPTTemplatePath, choice=template_index)
         myverbalizer = KnowledgeableVerbalizer(tokenizer, classes=class_labels, candidate_frac=args.cutoff,
                                                multi_token_handler="mean", max_token_split=args.max_seq_length)

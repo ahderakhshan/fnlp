@@ -1,0 +1,2 @@
+<mask>: <text_a>
+<text_a>: <mask>

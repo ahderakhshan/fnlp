@@ -7,7 +7,7 @@ import logging
 
 class ScoreSamples:
     def __init__(self, template_path, label_words_path, language_model_path, dataset, max_length=512,
-                 write_sample_scores=False, output_path=None):
+                 write_sample_scores=False, output_path=None, del_a_chars=None, del_b_chars=None):
         self.templates = self.load_templates(template_path)
         self.label_words = self.load_label_words(label_words_path)
         self.language_model = AutoModelForMaskedLM.from_pretrained(language_model_path)
@@ -21,6 +21,8 @@ class ScoreSamples:
         self.max_length = max_length
         self.write_sample_scores = write_sample_scores
         self.output_path = output_path
+        self.del_a_chars = del_a_chars if del_a_chars is not None else [False for _ in range(len(self.templates))]
+        self.del_b_chars = del_b_chars if del_b_chars is not None else [False for _ in range(len(self.templates))]
 
     @staticmethod
     def load_templates(template_path):
@@ -48,9 +50,10 @@ class ScoreSamples:
         logging.info("start computing scores")
         for label_word in self.label_words:
             label_word_ids = self.convert_label_word_to_ids(label_word)
-            for template in self.templates:
+            for template_index, template in enumerate(self.templates):
                 for sample in self.dataset.train.data:
-                    predicted_label = self.predict(sample, template, label_word_ids)
+                    predicted_label = self.predict(sample, template, label_word_ids,
+                                                   self.del_a_chars[template_index], self.del_b_chars[template_index])
                     if predicted_label == sample.label:
                         sample.score += 1
                 logging.info(f"socres for template {template} and label words {label_word} computed")
@@ -73,10 +76,10 @@ class ScoreSamples:
         dataframe = pd.DataFrame(dataframe)
         dataframe.to_csv(self.output_path)
 
-    def predict(self, sample, template, label_word_ids):
-        template = template.replace("<text_a>", sample.text_a)
+    def predict(self, sample, template, label_word_ids, del_a_char, del_b_char):
+        template = template.replace("<text_a>", sample.text_a if not del_a_char else sample.text_a[0:-1])
         if '<text_b>' in template:
-            template = template.replace("<text_b>", sample.text_b)
+            template = template.replace("<text_b>", sample.text_b if not del_b_char else sample.text_b[0:-1])
 
         tokenized_input = self.tokenizer(template, return_tensors="pt", padding="max_length", max_length=self.max_length
                                          , truncation=True)
