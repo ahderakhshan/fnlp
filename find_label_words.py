@@ -10,6 +10,7 @@ from openprompt.data_utils.data_sampler import FewShotSampler
 from transformers import XLMRobertaConfig, XLMRobertaTokenizer, XLMRobertaForMaskedLM
 from SelectLabelWords.KPTDataProcessor import ParsinluSentimentProcessor
 import argparse
+import torch
 from SelectLabelWords.utils import calibrate, tfidf_filter
 _MODEL_CLASSES['xlmroberta'] = ModelClass(**{
     'config': XLMRobertaConfig,
@@ -108,6 +109,8 @@ for template_index, template in enumerate(templates):
             logging.info(f"after RR label words are {myverbalizer.label_words}")
 
     explored_label_words.append(myverbalizer.label_words)
+    del label_word_explorer
+    torch.cuda.empty_cache()
 
 with open(OutputPath, "w") as f:
     for explored_label_word in explored_label_words:
