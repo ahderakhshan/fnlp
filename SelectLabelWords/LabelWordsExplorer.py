@@ -92,7 +92,7 @@ class LabelWordsExplorer:
         double_token_probs = {}
         for first_mask_token, first_mask_prob in first_mask_token_prob:
             for second_mask_token, second_mask_prob in second_mask_token_prob:
-                double_token_probs[f"{first_mask_token}*{second_mask_token}"] = first_mask_prob * second_mask_prob
+                double_token_probs[f"{first_mask_token} {second_mask_token}"] = first_mask_prob * second_mask_prob
         double_token_probs = dict(sorted(double_token_probs.items(), key=lambda x: x[1], reverse=True))
         return list(double_token_probs.keys())[:self.n2]
 
@@ -118,6 +118,6 @@ class LabelWordsExplorer:
         double_token_label_words = self.rank_label_words(self.m2, self.get_top_k_double_tokens)
         assert set(list(single_token_label_words.keys())) == set(list(double_token_label_words.keys())),\
             "keys are different in single token and double token label words"
-        return {k: single_token_label_words[k] + double_token_label_words[k] for k in single_token_label_words.keys()}
+        return {k: [self.initial_label_words[k]] + single_token_label_words[k] + double_token_label_words[k] for k in single_token_label_words.keys()}
 
 
