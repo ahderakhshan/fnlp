@@ -2,6 +2,7 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from tqdm import tqdm
+from openprompt.pipeline_base import PromptDataLoader, PromptModel, PromptForClassification
 
 
 def calibrate(prompt_model: PromptForClassification, dataloader: PromptDataLoader) -> torch.Tensor:
