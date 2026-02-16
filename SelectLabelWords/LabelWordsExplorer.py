@@ -99,11 +99,12 @@ class LabelWordsExplorer:
         for sample in self.dataset.train.data:
             demonstrations = self.sample_demonstrations()
             model_input = self.make_input(sample, demonstrations)
-            try:
-                top_k_tokens = get_top_k_func(model_input)
-            except Exception as e:
-                print(f"exception occurred: {e}")
-                continue
+            top_k_tokens = get_top_k_func(model_input)
+            # try:
+            #     top_k_tokens = get_top_k_func(model_input)
+            # except Exception as e:
+            #     print(f"exception occurred: {e}")
+            #     continue
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
                     result[sample.label][top_k_token] += 1 / (index + 1)
