@@ -101,8 +101,8 @@ class LabelWordsExplorer:
             model_input = self.make_input(sample, demonstrations)
             try:
                 top_k_tokens = get_top_k_func(model_input)
-            except:
-                print("exception occurred")
+            except Exception as e:
+                print(f"exception occurred: {e}")
                 continue
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
