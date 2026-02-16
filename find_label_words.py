@@ -176,6 +176,8 @@ for template_index, template in enumerate(templates):
             myverbalizer.register_calibrate_logits(cc_logits.mean(dim=0))
             logging.info(f"after FR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
             logging.info(f"after FR label words are {myverbalizer.label_words}")
+        for i in range(len(myverbalizer.label_words)):
+            myverbalizer.label_words[i] = [list(main_label_words.keys())[0]] + myverbalizer.label_words[i]
         if "RR" in args.filters:
             record = tfidf_filter(myverbalizer, cc_logits, class_labels)
             logging.info(f"after RR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
