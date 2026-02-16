@@ -157,7 +157,7 @@ for template_index, template in enumerate(templates):
                                                multi_token_handler="mean", max_token_split=args.max_seq_length)
         myverbalizer.label_words = list(finded_label_words.values())
         support_sampler = FewShotSampler(num_examples_per_label=70, also_sample_dev=False)
-        dataset['support'] = support_sampler(dataset['train'], seed=args.seed)
+        dataset['support'] = dataset["train"]  # support_sampler(dataset['train'], seed=args.seed)
         support_dataset = dataset['support']
         for example in support_dataset:
             print(f"example.label is {example.label}")
