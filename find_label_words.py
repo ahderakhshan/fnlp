@@ -177,7 +177,7 @@ for template_index, template in enumerate(templates):
             logging.info(f"after FR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
             logging.info(f"after FR label words are {myverbalizer.label_words}")
         for i in range(len(myverbalizer.label_words)):
-            myverbalizer.label_words[i] = [list(main_label_words.keys())[0]] + myverbalizer.label_words[i]
+            myverbalizer.label_words[i] = [list(main_label_words.values())[0]] + myverbalizer.label_words[i]
         logging.info(f"before RR label words are {myverbalizer.label_words}")
         if "RR" in args.filters:
             record = tfidf_filter(myverbalizer, cc_logits, class_labels)
