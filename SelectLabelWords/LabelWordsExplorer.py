@@ -75,9 +75,9 @@ class LabelWordsExplorer:
         temp_model_input = model_input
         model_input = model_input.split(" ")
         punctuation_index = temp_model_input.index(">") + 1
+        print(f"temp_model_input[punctuation_index] is {temp_model_input[punctuation_index]}")
         if len(temp_model_input) != punctuation_index and temp_model_input[punctuation_index] != " ":
             mask_index = model_input.index(self.mask + temp_model_input[punctuation_index])
-            print(f"mask token is {self.mask + temp_model_input[punctuation_index]}")
         else:
             mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
@@ -118,7 +118,7 @@ class LabelWordsExplorer:
             try:
                 top_k_tokens = get_top_k_func(model_input)
             except Exception as e:
-                print(f"exception occurred: {e} in {model_input}")
+                #print(f"exception occurred: {e} in {model_input}")
                 error_counter += 1
                 continue
             for index, top_k_token in enumerate(top_k_tokens):
