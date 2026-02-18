@@ -74,14 +74,13 @@ class LabelWordsExplorer:
         # duplicate mask token
         temp_model_input = model_input
         model_input = model_input.split(" ")
-        punctuation_index = temp_model_input.index(">") + 1
-        print(f"temp_model_input is {temp_model_input}")
-        print(f"temp_model_input[punctuation_index] is {temp_model_input[punctuation_index]}")
+        punctuation_index = temp_model_input.index("<mask>") + 6
         if len(temp_model_input) != punctuation_index and temp_model_input[punctuation_index] != " ":
             mask_index = model_input.index(self.mask + temp_model_input[punctuation_index])
         else:
             mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
+        print(f"model input is {model_input}")
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
