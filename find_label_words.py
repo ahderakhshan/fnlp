@@ -47,8 +47,8 @@ if args.task == "parsinlu-food-sentiment":
     dataset['train'] = ParsinluSentimentProcessor().get_train_examples(DataPath)
     dataset['test'] = ParsinluSentimentProcessor().get_test_examples(DataPath)
     class_labels = ParsinluSentimentProcessor().get_labels()
-    del_a_chars = None
-    del_b_chars = None
+    del_a_chars = [False, False, False]
+    del_b_chars = [False, False, False]
     batch_s = 1
 
 elif args.task == "parsinlu-movie-sentiment":
@@ -63,8 +63,8 @@ elif args.task == "parsinlu-movie-sentiment":
     dataset['train'] = ParsinluSentimentProcessor().get_train_examples(DataPath)
     dataset['test'] = ParsinluSentimentProcessor().get_test_examples(DataPath)
     class_labels = ParsinluSentimentProcessor().get_labels()
-    del_a_chars = None
-    del_b_chars = None
+    del_a_chars = [False, False, False]
+    del_b_chars = [False, False, False]
     batch_s = 1
 
 elif args.task == "parsinlu-nli":
