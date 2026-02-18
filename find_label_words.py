@@ -208,6 +208,7 @@ for template_index, template in enumerate(templates):
 
     explored_label_words.append(myverbalizer.label_words)
     del label_word_explorer
+    del cc_logits
     torch.cuda.empty_cache()
 
 # with open(OutputPath, "w") as f:
