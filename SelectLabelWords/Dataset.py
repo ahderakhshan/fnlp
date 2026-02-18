@@ -23,13 +23,6 @@ class DataSplit:
 
     def load_data(self):
         dataset = pd.read_csv(self.path, header=None, on_bad_lines="skip")
-        sample_size = min(2000, dataset.shape[0])  # Total desired sample size
-        sampled_dataset, _ = train_test_split(
-            dataset,
-            train_size=0.3,
-            stratify=dataset[self.label_column],
-            random_state=42
-        )
         result = []
         for index, row in dataset.iterrows():
             text_a = row[self.text_a_column]
