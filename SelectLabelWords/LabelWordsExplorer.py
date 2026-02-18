@@ -118,7 +118,7 @@ class LabelWordsExplorer:
             try:
                 top_k_tokens = get_top_k_func(model_input)
             except Exception as e:
-                print(f"exception occurred: {e}")
+                print(f"exception occurred: {e} in {model_input}")
                 error_counter += 1
                 continue
             for index, top_k_token in enumerate(top_k_tokens):
