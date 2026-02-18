@@ -183,7 +183,7 @@ for template_index, template in enumerate(templates):
             logging.info(f"after FR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
             logging.info(f"after FR label words are {myverbalizer.label_words}")
         f.write(f"after Frequency Refinement label words for template {template} \n")
-        for label_num, label_words in myverbalizer.label_words:
+        for label_num, label_words in enumerate(myverbalizer.label_words):
             f.write(f"\t for label {list(main_label_words.keys())[label_num]}\n")
             for word in label_words:
                 f.write(f"\t\t {word}\n")
@@ -196,7 +196,7 @@ for template_index, template in enumerate(templates):
             logging.info(f"after RR label words are {myverbalizer.label_words}")
 
         f.write(f"after Relevance Refinement label words for template {template} \n")
-        for label_num, label_words in myverbalizer.label_words:
+        for label_num, label_words in enumerate(myverbalizer.label_words):
             f.write(f"\t for label {list(main_label_words.keys())[label_num]} \n")
             for word in label_words:
                 f.write(f"\t\t {word} \n")
