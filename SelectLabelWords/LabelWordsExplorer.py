@@ -99,15 +99,17 @@ class LabelWordsExplorer:
 
     def rank_label_words(self, m, get_top_k_func):
         result = {k: {} for k, _ in self.initial_label_words.items()}
+        error_counter = 0
         for sample in self.dataset.train.data:
             demonstrations = self.sample_demonstrations()
             model_input = self.make_input(sample, demonstrations)
-            top_k_tokens = get_top_k_func(model_input)
-            # try:
-            #     top_k_tokens = get_top_k_func(model_input)
-            # except Exception as e:
-            #     print(f"exception occurred: {e}")
-            #     continue
+            # top_k_tokens = get_top_k_func(model_input)
+            try:
+                top_k_tokens = get_top_k_func(model_input)
+            except Exception as e:
+                print(f"exception occurred: {e}")
+                error_counter += 1
+                continue
             for index, top_k_token in enumerate(top_k_tokens):
                 try:
                     result[sample.label][top_k_token] += 1 / (index + 1)
@@ -117,6 +119,7 @@ class LabelWordsExplorer:
             sorted_value = dict(sorted(value.items(), key=lambda x: x[1], reverse=True))
             result[key] = sorted_value
         result = {k: list(v.keys())[:m] for k, v in result.items()}
+        print(f"total errors {error_counter}")
         return result
 
     def find_label_words(self):
