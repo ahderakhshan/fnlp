@@ -113,8 +113,10 @@ my_dataset = sample_selector.dataset
 with open(TemplatePath, 'r') as f:
     templates = f.read().strip().split("\n")
 
+output_file = open(OutputPath, "w")
 explored_label_words = []
 for template_index, template in enumerate(templates):
+    f.write(f"initial label words for template {template} \n")
     label_word_explorer = LabelWordsExplorer(language_model=LanguageModel,
                                              dataset=my_dataset,
                                              initial_label_words=main_label_words,
@@ -127,6 +129,10 @@ for template_index, template in enumerate(templates):
                                              n2=30,
                                              max_length=512)
     finded_label_words = label_word_explorer.find_label_words()
+    for key, values in finded_label_words.items():
+        f.write(f"\t label words for {key} \n")
+        for val in values:
+            f.write(f"\t\t {val} \n")
     logging.info(f"label words found for template: {template} are {finded_label_words}")
     if len(args.filters) > 0:
         if args.task == "parsinlu-nli":
@@ -156,11 +162,11 @@ for template_index, template in enumerate(templates):
         myverbalizer = KnowledgeableVerbalizer(tokenizer, classes=class_labels, candidate_frac=args.cutoff,
                                                multi_token_handler="mean", max_token_split=args.max_seq_length)
         myverbalizer.label_words = list(finded_label_words.values())
-        support_sampler = FewShotSampler(num_examples_per_label=70, also_sample_dev=False)
+        # support_sampler = FewShotSampler(num_examples_per_label=70, also_sample_dev=False)
         dataset['support'] = dataset["train"]  # support_sampler(dataset['train'], seed=args.seed)
         support_dataset = dataset['support']
         for example in support_dataset:
-            print(f"example.label is {example.label}")
+            # print(f"example.label is {example.label}")
             example.label = -1
         support_dataloader = PromptDataLoader(dataset=support_dataset, template=mytemplate, tokenizer=tokenizer,
                                               tokenizer_wrapper_class=WrapperClass, max_seq_length=args.max_seq_length,
@@ -176,22 +182,35 @@ for template_index, template in enumerate(templates):
             myverbalizer.register_calibrate_logits(cc_logits.mean(dim=0))
             logging.info(f"after FR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
             logging.info(f"after FR label words are {myverbalizer.label_words}")
-        for i in range(len(myverbalizer.label_words)):
-            myverbalizer.label_words[i] = [list(main_label_words.values())[i]] + myverbalizer.label_words[i]
+        f.write(f"after Frequency Refinement label words for template {template} \n")
+        for label_num, label_words in myverbalizer.label_words:
+            f.write(f"\t for label {list(main_label_words.keys())[label_num]}\n")
+            for word in label_words:
+                f.write(f"\t\t {word}\n")
+        # for i in range(len(myverbalizer.label_words)):
+        #     myverbalizer.label_words[i] = [list(main_label_words.values())[i]] + myverbalizer.label_words[i]
         logging.info(f"before RR label words are {myverbalizer.label_words}")
         if "RR" in args.filters:
             record = tfidf_filter(myverbalizer, cc_logits, class_labels)
             logging.info(f"after RR number of label words per classes {[len(i) for i in myverbalizer.label_words]}")
             logging.info(f"after RR label words are {myverbalizer.label_words}")
 
+        f.write(f"after Relevance Refinement label words for template {template} \n")
+        for label_num, label_words in myverbalizer.label_words:
+            f.write(f"\t for label {list(main_label_words.keys())[label_num]} \n")
+            for word in label_words:
+                f.write(f"\t\t {word} \n")
+
+        f.write(f"********************************************\n")
+
     explored_label_words.append(myverbalizer.label_words)
     del label_word_explorer
     torch.cuda.empty_cache()
 
-with open(OutputPath, "w") as f:
-    for explored_label_word in explored_label_words:
-        f.write(str(explored_label_word) + "\n")
-
+# with open(OutputPath, "w") as f:
+#     for explored_label_word in explored_label_words:
+#         f.write(str(explored_label_word) + "\n")
+f.close()
 logging.info("Complete")
 
 
