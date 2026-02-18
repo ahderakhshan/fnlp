@@ -25,9 +25,9 @@ class LabelWordsExplorer:
         self.mask = mask
         self.max_length = max_length
         for sample in self.dataset.train.data:
-            if del_a_last_char:
+            if del_a_last_char and sample.text_a[-1] in ["،", ".", "!", "؟"]:
                 sample.text_a = sample.text_a[0:-1]
-            if del_b_last_char:
+            if del_b_last_char and sample.text_b[-1] in ["،", ".", "!", "؟"]:
                 sample.text_b = sample.text_b[0:-1]
 
     def sample_demonstrations(self):

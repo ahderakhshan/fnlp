@@ -40,8 +40,8 @@ class ParsiNLUNLI(DataProcessor):
         dataset = pd.read_csv(path, header=None)
         for index, row in dataset.iterrows():
             label, sentence_a, sentence_b = row[2], row[0], row[1]
-            sentence_a = sentence_a[0:-1] if del_a_last_char else sentence_a
-            sentence_b = sentence_b[0:-1] if del_b_last_char else sentence_b
+            sentence_a = sentence_a[0:-1] if del_a_last_char and sentence_a[-1] in self.punctuations else sentence_a
+            sentence_b = sentence_b[0:-1] if del_b_last_char and sentence_b[-1] in self.punctuations else sentence_b
             example = InputExample(guid=str(index), text_a=sentence_a, text_b=sentence_b,
                                    label=self.label_column_to_ids[label])
             examples.append(example)
