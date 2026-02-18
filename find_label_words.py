@@ -89,6 +89,7 @@ elif args.task == "digikala-tc":
     LanguageModel = args.model_name_or_path
     OutputPath = "./labelwords/digikalal-text-classification/explored_labelwords.txt"
     #main_label_words = {"Positive": "خوب", "Negative": "بد", "Neutral": "متوسط"}
+    main_label_words = {"علم و تکنولوژی": "فناوری", "بازی ویدیویی": "بازی", "هنر و سینما": "سینما", "سلامت و زیبایی": "سلامتی","کتاب و ادبیات":"ادبیات", "راهنمای خرید": "خرید", "عمومی": "عمومی"}
     del_a_chars = [False, True]
     del_b_chars = [False, False]
     batch_s = 1

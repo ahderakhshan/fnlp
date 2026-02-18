@@ -52,8 +52,8 @@ class DigikalaTextClassificationProcessor(DataProcessor):
     def __init__(self):
         super().__init__()
         self.labels = ["فناوری", "بازی","سینما", "سلامتی","ادبیات", "خرید", "عمومی"]
-        self.label_column_to_ids = {"علم و تکنولوژی": 0, "بازی ویدیویی": 1, "هنر و سینما": 2, "سلامت و زیبایی": 3,
-                                    "کتاب و ادبیات":4, "راهنمای خرید": 5, "عمومی": 6}
+        self.label_column_to_ids = {"علم و تکنولوژی": 0, "بازی ویدیویی": 1, "هنر و سینما": 2, "سلامت و زیبایی": 3,"کتاب و ادبیات":4, "راهنمای خرید": 5, "عمومی": 6}
+
         self.punctuations = ["،","؛",":","؟","!",".","—","-","%"]
 
     def get_train_examples(self, data_dir, del_a_last_char=False, del_b_last_char=False) -> InputExample:
