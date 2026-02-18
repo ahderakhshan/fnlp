@@ -28,8 +28,11 @@ class LabelWordsExplorer:
     def sample_demonstrations(self):
         result = {}
         for label, label_word in self.initial_label_words.items():
-            label_sample = random.sample([sample for sample in self.dataset.train.data if (sample.label == label and
-                                                                             sample.score >= self.threshold)], k=1)[0]
+            best_samples = [sample for sample in self.dataset.train.data if (sample.label == label and
+                                                                             sample.score >= self.threshold)]
+            if len(best_samples) == 0:
+                best_samples = [sample for sample in self.dataset.train.data if sample.label == label]
+            label_sample = random.sample(best_samples, k=1)[0]
             result[label] = label_sample
         return result
 
