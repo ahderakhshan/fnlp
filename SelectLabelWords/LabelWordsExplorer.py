@@ -6,7 +6,7 @@ import torch
 
 class LabelWordsExplorer:
     def __init__(self, language_model, dataset, initial_label_words, template, threshold, k1, m1, k2, m2, n2,
-                 mask="<mask>", max_length=512):
+                 mask="<mask>", max_length=512, del_a_last_char=False, del_b_last_char=False):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.language_model = AutoModelForMaskedLM.from_pretrained(language_model)
         self.tokenizer = AutoTokenizer.from_pretrained(language_model)
@@ -24,6 +24,11 @@ class LabelWordsExplorer:
         self.n2 = n2
         self.mask = mask
         self.max_length = max_length
+        for sample in self.dataset.train.data:
+            if del_a_last_char:
+                sample.text_a = sample.text_a[0:-1]
+            if del_b_last_char:
+                sample.text_b = sample.text_b[0:-1]
 
     def sample_demonstrations(self):
         result = {}
@@ -68,7 +73,11 @@ class LabelWordsExplorer:
     def get_top_k_double_tokens(self, model_input):
         # duplicate mask token
         model_input = model_input.split(" ")
-        mask_index = model_input.index("<mask>،")
+        punctuation_index = model_input.index(">") + 1
+        if len(model_input) != punctuation_index and model_input[punctuation_index] != " ":
+            mask_index = model_input.index(self.mask + model_input[punctuation_index])
+        else:
+            mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
         print(f"model input {model_input}")
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,

@@ -127,7 +127,9 @@ for template_index, template in enumerate(templates):
                                              k2=25,
                                              m2=20,
                                              n2=30,
-                                             max_length=512)
+                                             max_length=512,
+                                             del_a_last_char=del_a_chars[template_index],
+                                             del_b_last_char=del_b_chars[template_index])
     finded_label_words = label_word_explorer.find_label_words()
     for key, values in finded_label_words.items():
         f.write(f"\t label words for {key} \n")
