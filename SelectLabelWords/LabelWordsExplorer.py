@@ -68,7 +68,7 @@ class LabelWordsExplorer:
     def get_top_k_double_tokens(self, model_input):
         # duplicate mask token
         model_input = model_input.split(" ")
-        mask_index = model_input.index(self.mask)
+        mask_index = model_input.index("<mask>،")
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
         print(f"model input {model_input}")
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
