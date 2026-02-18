@@ -113,7 +113,7 @@ my_dataset = sample_selector.dataset
 with open(TemplatePath, 'r') as f:
     templates = f.read().strip().split("\n")
 
-output_file = open(OutputPath, "w")
+f = open(OutputPath, "w")
 explored_label_words = []
 for template_index, template in enumerate(templates):
     f.write(f"initial label words for template {template} \n")
