@@ -26,7 +26,7 @@ class DataSplit:
         sample_size = min(2000, dataset.shape[0])  # Total desired sample size
         sampled_dataset, _ = train_test_split(
             dataset,
-            train_size=sample_size,
+            train_size=0.3,
             stratify=dataset[self.label_column],
             random_state=42
         )
