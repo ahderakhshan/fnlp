@@ -82,10 +82,10 @@ elif args.task == "parsinlu-nli":
 
 elif args.task == "digikala-tc":
     DataPath = "./data/digikala-text-classification/"
-    ScoreOutputPath = "./data/digikalal-text-classification/train_scores.csv"
-    TemplatePath = "./templates/digikalal-text-classification/templates.txt"
-    KPTTemplatePath = "./templates/digikalal-text-classification/templates_kpt.txt"
-    LabelWordPath = "./labelwords/digikalal-text-classification/labelwords.txt"
+    ScoreOutputPath = "./data/digikala-text-classification/train_scores.csv"
+    TemplatePath = "./templates/digikala-text-classification/templates.txt"
+    KPTTemplatePath = "./templates/digikala-text-classification/templates_kpt.txt"
+    LabelWordPath = "./labelwords/digikala-text-classification/labelwords.txt"
     LanguageModel = args.model_name_or_path
     OutputPath = "./labelwords/digikalal-text-classification/explored_labelwords.txt"
     #main_label_words = {"Positive": "خوب", "Negative": "بد", "Neutral": "متوسط"}
