@@ -98,14 +98,14 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
-my_dataset = Dataset(DataPath, text_a_column=1, text_b_column=None, label_column=0)
+my_dataset = Dataset(DataPath, text_a_column=0, text_b_column=1, label_column=2)
 sample_selector = ScoreSamples(template_path=TemplatePath,
                                label_words_path=LabelWordPath,
                                language_model_path=LanguageModel,
                                dataset=my_dataset,
                                write_sample_scores=True,
                                output_path=ScoreOutputPath,
-                               max_length=128,
+                               max_length=512,
                                del_a_chars=del_a_chars,
                                del_b_chars=del_b_chars)
 sample_selector.score_samples()
