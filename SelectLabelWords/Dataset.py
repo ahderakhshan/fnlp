@@ -21,7 +21,7 @@ class DataSplit:
         self.data = self.load_data()
 
     def load_data(self):
-        dataset = pd.read_csv(self.path, header=None)
+        dataset = pd.read_csv(self.path, header=None, on_bad_lines="skip")
         result = []
         for index, row in dataset.iterrows():
             text_a = row[self.text_a_column]
