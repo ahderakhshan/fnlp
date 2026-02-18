@@ -70,6 +70,7 @@ class LabelWordsExplorer:
         model_input = model_input.split(" ")
         mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
+        print(f"model input {model_input}")
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
