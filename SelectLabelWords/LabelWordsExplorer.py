@@ -77,10 +77,10 @@ class LabelWordsExplorer:
         punctuation_index = temp_model_input.index(">") + 1
         if len(temp_model_input) != punctuation_index and temp_model_input[punctuation_index] != " ":
             mask_index = model_input.index(self.mask + temp_model_input[punctuation_index])
+            print(f"mask token is {self.mask + temp_model_input[punctuation_index]}")
         else:
             mask_index = model_input.index(self.mask)
         model_input = " ".join(model_input[:mask_index]) + self.mask + " " + " ".join(model_input[mask_index:])
-        print(f"model input {model_input}")
         inputs = self.tokenizer(model_input, return_tensors="pt", padding="max_length", max_length=self.max_length,
                                 truncation=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
