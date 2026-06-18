@@ -1,6 +1,6 @@
 from itertools import product
 from SelectLabelWords.Dataset import Dataset
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModelForMaskedLM, AutoTokenizer
 import torch
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score
@@ -14,11 +14,12 @@ class MappingSelector:
         self.template = template
         self.del_a_last_char = del_a_last_char
         self.del_b_last_char = del_b_last_char
-        self.model = AutoModel.from_pretrained(model_name)
+        self.model = AutoModelForMaskedLM.from_pretrained(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.max_length = max_length
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.output_path = output_path
+        self.model.to(self.device)
 
     def score_mappings(self):
         all_mappings = [
@@ -35,7 +36,7 @@ class MappingSelector:
 
         with open(self.output_path, "w", encoding="utf-8") as f:
             for index in argsorts:
-                f.write(f"{all_mappings[index]}---{all_acc[index]}")
+                f.write(f"{all_mappings[index]}---{all_acc[index]}\n")
 
     def get_predictions(self, mapping):
         predictions = []
@@ -43,7 +44,7 @@ class MappingSelector:
             template = self.template.replace("<text_a>", data.text_a if not self.del_a_last_char else data.text_a[:-1])
             if data.text_b:
                 template = template.replace("<text_b>", data.text_b if not self.del_b_last_char else data.text_b[:-1])
-            template_tokens = self.tokenizer.tokenize(template, return_tensors="pt", padding="max_length",
+            template_tokens = self.tokenizer(template, return_tensors="pt", padding="max_length",
                                                       max_length=self.max_length, truncation=True)
             tokenized_input = {k: v.to(self.device) for k, v in template_tokens.items()}
             input_ids = tokenized_input["input_ids"]
