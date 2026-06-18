@@ -30,7 +30,7 @@ else:
 
 label_words = eval(args.label_words)
 output_path = f"./mappings/{args.task}-{args.file_counter}.txt"
-logging.info("start")
+print("start")
 mapping_selector = MappingSelector(
     model_name=args.model_name_or_path,
     dataset=dataset,
