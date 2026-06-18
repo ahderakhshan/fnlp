@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 from SelectLabelWords.Dataset import Dataset
 from MappingSelector.MappingSelector import MappingSelector
+import logging
 
 
 parser = argparse.ArgumentParser("")
@@ -29,7 +30,7 @@ else:
 
 label_words = eval(args.label_words)
 output_path = f"./mappings/{args.task}-{args.file_counter}.txt"
-
+logging.info("start")
 mapping_selector = MappingSelector(
     model_name=args.model_name_or_path,
     dataset=dataset,
