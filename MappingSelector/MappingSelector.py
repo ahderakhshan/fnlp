@@ -64,6 +64,5 @@ class MappingSelector:
 
             predicted_label = max(probs, key=probs.get)
             predictions.append(predicted_label)
-            print(f"prediction for {template} is {predicted_label}")
         return predictions
 
