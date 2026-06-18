@@ -21,6 +21,9 @@ class MappingSelector:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.output_path = output_path
         self.model.to(self.device)
+        # just 1 token label words must remain in this phase
+        self.label_words = {k: [word for word in v if len(self.tokenizer.tokenize(word)) == 1]
+                            for k, v in self.label_words.items()}
 
     def score_mappings(self):
         all_mappings = [
