@@ -5,6 +5,7 @@ import torch
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score
 import logging
+import os
 
 
 class MappingSelector:
@@ -39,6 +40,7 @@ class MappingSelector:
             print(f"accuracy for {mapping} = {all_acc[-1]}")
         argsorts = sorted(range(len(all_acc)), key=lambda i: all_acc[i], reverse=True)
 
+        os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
         with open(self.output_path, "w", encoding="utf-8") as f:
             for index in argsorts:
                 f.write(f"{all_mappings[index]}---{all_acc[index]}\n")
