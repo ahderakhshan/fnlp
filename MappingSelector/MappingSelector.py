@@ -1,6 +1,6 @@
 from itertools import product
 from SelectLabelWords.Dataset import Dataset
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer, XLMRobertaModel
 import torch
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score
@@ -14,7 +14,7 @@ class MappingSelector:
         self.template = template
         self.del_a_last_char = del_a_last_char
         self.del_b_last_char = del_b_last_char
-        self.model = AutoModel.from_pretrained(model_name)
+        self.model = XLMRobertaModel.from_pretrained(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.max_length = max_length
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
