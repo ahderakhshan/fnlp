@@ -4,6 +4,7 @@ from transformers import AutoModelForMaskedLM, AutoTokenizer
 import torch
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score
+import logging
 
 
 class MappingSelector:
@@ -32,6 +33,7 @@ class MappingSelector:
             predictions = self.get_predictions(mapping)
             mapping_accuracy = accuracy_score(correct_labels, predictions)
             all_acc.append(mapping_accuracy)
+            logging.info(f"accuracy for {mapping} = {all_acc[-1]}")
         argsorts = sorted(range(len(all_acc)), key=lambda i: all_acc[i], reverse=True)
 
         with open(self.output_path, "w", encoding="utf-8") as f:
