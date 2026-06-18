@@ -6,7 +6,7 @@ from MappingSelector.MappingSelector import MappingSelector
 
 parser = argparse.ArgumentParser("")
 parser.add_argument("--task", type=str, default="parsinlu-food-sentiment")
-parser.add_argument("--model_name_or_path", type=str, default="FacebookAI/xlm-roberta-large")
+parser.add_argument("--model_name_or_path", type=str, default="xlm-roberta-large")
 parser.add_argument("--template", type=str)
 parser.add_argument("--max_seq_length", type=int, default=512)
 parser.add_argument("--label_words", type=str)
