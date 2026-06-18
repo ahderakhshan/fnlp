@@ -33,7 +33,7 @@ class MappingSelector:
             predictions = self.get_predictions(mapping)
             mapping_accuracy = accuracy_score(correct_labels, predictions)
             all_acc.append(mapping_accuracy)
-            logging.info(f"accuracy for {mapping} = {all_acc[-1]}")
+            print(f"accuracy for {mapping} = {all_acc[-1]}")
         argsorts = sorted(range(len(all_acc)), key=lambda i: all_acc[i], reverse=True)
 
         with open(self.output_path, "w", encoding="utf-8") as f:
@@ -64,6 +64,6 @@ class MappingSelector:
 
             predicted_label = max(probs, key=probs.get)
             predictions.append(predicted_label)
-            logging.info(f"prediction for {template} is {predicted_label}")
+            print(f"prediction for {template} is {predicted_label}")
         return predictions
 
