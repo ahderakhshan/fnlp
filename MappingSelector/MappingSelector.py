@@ -34,7 +34,9 @@ class MappingSelector:
         ]
         correct_labels = [data.label for data in self.dataset.train.data]
         all_acc = []
+        print(f"len all mappings is {len(all_mappings)}")
         for mapping in all_mappings:
+            print(f"start computing {mapping} score")
             predictions = self.get_predictions(mapping)
             mapping_accuracy = accuracy_score(correct_labels, predictions)
             all_acc.append(mapping_accuracy)

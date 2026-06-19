@@ -1,11 +1,11 @@
 python find_mappings.py --file_counter 1 --task "parsi-nlu-foodsentiment" --template "<text_a> <mask>" --label_words '{"Positive": ["ممنون", "تشکر", "عالی ممنون", "ممنون عالی", "خوب", "عالی"], "Negative": [":(", "بد", "!!!!!", "🙁", "😐"], "Neutral": ["متوسط"]}'
-
+echo "step 1"
 python find_mappings.py --file_counter 2 --task "parsi-nlu-foodsentiment" --template "<text_a> <mask> است." --label_words '{"Positive": ["بهترین", "عالی", "خوب", "خوبی", "واقعا عالی", "سالم", "کیفیت خوب", "خوشمزه", "کیفیت عالی", "قیمت خوب"], "Negative": ["خراب", "بد", "اشتباه", "تلخ", "عجیب", "ضعیف", "خیلی بد", "واقعا بد", "خیلی ضعیف", "کم", "زیاد"], "Neutral": ["متوسط", "معروف"]}'
-
+echo "step 2"
 python find_mappings.py --file_counter 3 --task "parsi-nlu-foodsentiment" --template "<text_a> <mask> بود." --label_words '{"Positive": ["خوب", "خوش"], "Negative": ["خراب", "فاجعه", "بد", "بدی", "اشتباه", "تلخ", "ضعیف", "عجیب"], "Neutral": ["متوسط"]}'
-
+echo "step 3"
 python find_mappings.py --file_counter 1 --task "parsi-nlu-moviesentiment" --template "<text_a> <mask>" --label_words '{"Positive": ["ممنون", "خوب", "عالی", "🙂"], "Negative": ["بد", "فیلم", "!!!!", "😐"], "Neutral": ["متوسط", "عکس", "ادامه"]}'
-
+echo  "step 4"
 python find_mappings.py --file_counter 2 --task "parsi-nlu-moviesentiment" --template "<text_a> <mask> است." --label_words '{"Positive": ["دیدنی", "جذاب", "بسیار عالی", "واقعا عالی", "خوب"], "Negative": ["بد", "تلخ", "فیلم بد", "واقعا بد", "خیلی بد"], "Neutral": ["متوسط", "پایان گذشته", "جالب", "قشنگ"]}'
 
 python find_mappings.py --file_counter 3 --task "parsi-nlu-moviesentiment" --template "<text_a> <mask> بود." --label_words '{"Positive": ["زیبایی", "واقعا عالی", "واقعا خوب", "ممنون", "بسیار عالی", "موفق", "بسیار العاده", "مفید", "متفاوت", "خوب", "عالی"], "Negative": ["بد", "فاجعه", "بدی", "تلخ", "واقعا بد", "فیلم بد", "ضعیف", "فیلم ضعیف"], "Neutral": ["متوسط", "جالب", "قشنگ", "زیبا", "خیلی جالب", "خیلی قشنگ"]}'
