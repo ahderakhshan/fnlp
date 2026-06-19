@@ -1,4 +1,3 @@
-conda activate parsi-fs
 python find_mappings.py --file_counter 1 --task "parsi-nlu-foodsentiment" --template "<text_a> <mask>" --label_words '{"Positive": ["ممنون", "تشکر", "عالی ممنون", "ممنون عالی", "خوب", "عالی"], "Negative": [":(", "بد", "!!!!!", "🙁", "😐"], "Neutral": ["متوسط"]}'
 echo "step 1"
 python find_mappings.py --file_counter 2 --task "parsi-nlu-foodsentiment" --template "<text_a> <mask> است." --label_words '{"Positive": ["بهترین", "عالی", "خوب", "خوبی", "واقعا عالی", "سالم", "کیفیت خوب", "خوشمزه", "کیفیت عالی", "قیمت خوب"], "Negative": ["خراب", "بد", "اشتباه", "تلخ", "عجیب", "ضعیف", "خیلی بد", "واقعا بد", "خیلی ضعیف", "کم", "زیاد"], "Neutral": ["متوسط", "معروف"]}'
