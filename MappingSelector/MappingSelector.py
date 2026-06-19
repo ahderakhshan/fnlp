@@ -25,6 +25,7 @@ class MappingSelector:
         # just 1 token label words must remain in this phase
         self.label_words = {k: [word for word in v if len(self.tokenizer.tokenize(word)) == 1]
                             for k, v in self.label_words.items()}
+        self.puncs = ["،", ".", "؟", "!", ":"]
 
     def score_mappings(self):
         all_mappings = [
@@ -48,9 +49,9 @@ class MappingSelector:
     def get_predictions(self, mapping):
         predictions = []
         for data in self.dataset.train.data:
-            template = self.template.replace("<text_a>", data.text_a if not self.del_a_last_char else data.text_a[:-1])
+            template = self.template.replace("<text_a>", data.text_a[:-1] if self.del_a_last_char and data.text_a[-1] in self.puncs else data.text_a)
             if data.text_b:
-                template = template.replace("<text_b>", data.text_b if not self.del_b_last_char else data.text_b[:-1])
+                template = template.replace("<text_b>", data.text_b[:-1] if self.del_b_last_char and data.text_b[-1] in self.puncs else data.text_b)
             template_tokens = self.tokenizer(template, return_tensors="pt", padding="max_length",
                                                       max_length=self.max_length, truncation=True)
             tokenized_input = {k: v.to(self.device) for k, v in template_tokens.items()}
