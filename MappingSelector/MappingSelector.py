@@ -25,6 +25,7 @@ class MappingSelector:
         # just 1 token label words must remain in this phase
         self.label_words = {k: [word for word in v if len(self.tokenizer.tokenize(word)) == 1]
                             for k, v in self.label_words.items()}
+        print(f"label words for just 1 tokens {self.label_words}")
         self.puncs = ["،", ".", "؟", "!", ":"]
 
     def score_mappings(self):
