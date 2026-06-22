@@ -35,14 +35,14 @@ class MappingSelector:
             for values in product(*self.label_words.values())
         ]
         correct_labels = [data.label for data in self.dataset.train.data]
+        all_predictions = self.get_predictions(all_mappings)
         all_acc = []
         print(f"len all mappings is {len(all_mappings)}")
-        for mapping in all_mappings:
-            print(f"start computing {mapping} score")
-            predictions = self.get_predictions(mapping)
-            mapping_accuracy = accuracy_score(correct_labels, predictions)
+        for index, prediction in enumerate(all_predictions):
+            print(f"start computing {all_mappings[index]} score")
+            mapping_accuracy = accuracy_score(correct_labels, prediction)
             all_acc.append(mapping_accuracy)
-            print(f"accuracy for {mapping} = {all_acc[-1]}")
+            print(f"accuracy for {all_mappings[index]} = {all_acc[-1]}")
         argsorts = sorted(range(len(all_acc)), key=lambda i: all_acc[i], reverse=True)
 
         os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
@@ -50,8 +50,8 @@ class MappingSelector:
             for index in argsorts:
                 f.write(f"{all_mappings[index]}---{all_acc[index]}\n")
 
-    def get_predictions(self, mapping):
-        predictions = []
+    def get_predictions(self, all_mappings):
+        all_predictions = []
         batch_size = self.batch_size
         batched_data = [self.dataset.train.data[i:i+batch_size] for i in range(0,len(self.dataset.train.data),batch_size)]
         for data in batched_data:
@@ -77,20 +77,23 @@ class MappingSelector:
                 logits.shape[0],
                 device=self.device
             )
-
             mask_logits = logits[batch_ids, mask_index, :]
             probs = F.softmax(mask_logits, dim=-1)
-            label_word_ids = {label: self.tokenizer.encode(word, add_special_tokens=False)
-                              for label, word in mapping.items()}
+            for mapping in all_mappings:
+                predictions = []
+                label_word_ids = {label: self.tokenizer.encode(word, add_special_tokens=False)
+                                  for label, word in mapping.items()}
 
-            for i in range(probs.shape[0]):
-                scores = {
-                    label: probs[i, ids[0]].item()
-                    for label, ids in label_word_ids.items()
-                }
+                for i in range(probs.shape[0]):
+                    scores = {
+                        label: probs[i, ids[0]].item()
+                        for label, ids in label_word_ids.items()
+                    }
 
-                predictions.append(
-                    max(scores, key=scores.get)
-                )
-        return predictions
+                    predictions.append(
+                        max(scores, key=scores.get)
+                    )
+
+                all_predictions.append(predictions)
+        return all_predictions
 
