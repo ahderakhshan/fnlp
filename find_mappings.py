@@ -14,6 +14,7 @@ parser.add_argument("--label_words", type=str)
 parser.add_argument("--del_a_last_char", action="store_true")
 parser.add_argument("--del_b_last_char", action="store_true")
 parser.add_argument("--file_counter", type=str)
+parser.add_argument("--batch_size", type=int, default=128)
 args = parser.parse_args()
 
 
@@ -39,6 +40,7 @@ mapping_selector = MappingSelector(
     del_a_last_char=args.del_a_last_char,
     del_b_last_char=args.del_b_last_char,
     output_path=output_path,
-    max_length=args.max_seq_length
+    max_length=args.max_seq_length,
+    batch_size=args.batch_size
 ).score_mappings()
 
