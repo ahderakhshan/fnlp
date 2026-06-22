@@ -51,7 +51,7 @@ class MappingSelector:
                 f.write(f"{all_mappings[index]}---{all_acc[index]}\n")
 
     def get_predictions(self, all_mappings):
-        all_predictions = []
+        all_predictions = [[] for i in range(all_mappings)]
         batch_size = self.batch_size
         batched_data = [self.dataset.train.data[i:i+batch_size] for i in range(0,len(self.dataset.train.data),batch_size)]
         for data in batched_data:
@@ -79,8 +79,7 @@ class MappingSelector:
             )
             mask_logits = logits[batch_ids, mask_index, :]
             probs = F.softmax(mask_logits, dim=-1)
-            for mapping in all_mappings:
-                predictions = []
+            for index, mapping in enumerate(all_mappings):
                 label_word_ids = {label: self.tokenizer.encode(word, add_special_tokens=False)
                                   for label, word in mapping.items()}
 
@@ -90,10 +89,9 @@ class MappingSelector:
                         for label, ids in label_word_ids.items()
                     }
 
-                    predictions.append(
+                    all_predictions[index].append(
                         max(scores, key=scores.get)
                     )
 
-                all_predictions.append(predictions)
         return all_predictions
 
