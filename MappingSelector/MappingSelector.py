@@ -30,6 +30,11 @@ class MappingSelector:
         self.batch_size = batch_size
 
     def score_mappings(self):
+        print(f"start score mapping")
+        res = 1
+        for value in self.label_words.values():
+            res*=len(value)
+        print(f"len all mappings is {res}")
         all_mappings = [
             dict(zip(self.label_words.keys(), values))
             for values in product(*self.label_words.values())
